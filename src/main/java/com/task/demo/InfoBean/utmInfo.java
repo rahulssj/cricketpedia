@@ -1,4 +1,4 @@
-package com.task.demo;
+package com.task.demo.InfoBean;
 
 public class utmInfo {
 

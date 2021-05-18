@@ -1,4 +1,4 @@
-package com.task.demo;
+package com.task.demo.controller;
 
 import javax.servlet.http.HttpSession;
 
@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.task.demo.InfoBean.utmInfo;
 
 
 //Tracking of the UTM parameters 

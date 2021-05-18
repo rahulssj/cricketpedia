@@ -1,4 +1,4 @@
-package com.task.demo;
+package com.task.demo.controller;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,13 +20,25 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.google.common.hash.Hashing;
+import com.task.demo.service.shortUrlService;
+import com.task.demo.service.trackService;
 
 @RestController
-@RequestMapping("/cricketpedia/")
+@RequestMapping("/cricketpedia")
 public class urlController {
 	@Autowired
-	StringRedisTemplate redisTemplate; // for storing key value 
+	StringRedisTemplate redisTemplate;
+	@Autowired
+	shortUrlService urlService;
+	@Autowired
+	trackService trackurl;
+	 // for storing key value 
 //shorten links get requests handle here
+	@RequestMapping("/")
+	public String home() {
+		
+		return "hello";
+	}
 	@GetMapping("/{id}")
 	public RedirectView getUrl(@PathVariable String id) throws MalformedURLException {
 		
@@ -34,16 +46,8 @@ public class urlController {
 		String OriginalUrl=redisTemplate.opsForValue().get(id);
 		if(OriginalUrl==null) throw new RuntimeException("No Url shorten with this id"+id);
 		else {
-		URL url=new URL(OriginalUrl);
-		String query=url.getQuery();
-		String link="/track?"+query;
-		System.out.println(query);
-		System.out.println(OriginalUrl);
-		System.out.println(link);
-		RedirectView redirectView = new RedirectView();
-	       redirectView.setUrl(link);
-	 
-		return redirectView;}
+			return trackurl.trackUrl(OriginalUrl);
+		}
 	}
 	
 	// Shortening request handled here
@@ -57,14 +61,8 @@ public class urlController {
 		 
 		 if(validator.isValid(url)) 
 		 {
-		String id= Hashing.murmur3_32().hashString(url, StandardCharsets.UTF_8).toString();
-		if(redisTemplate.opsForValue().get(id)==null) {
-
-			redisTemplate.opsForValue().set(id, url);
-			 return "shorten link is: " + id;			
-		}
-		else return "shorten link is: " + id;
-		
+			 String result=urlService.doShortUrl(url);
+			 return result;
 		 }
 		 throw new RuntimeException("Url Invalid "+url);
 		 
